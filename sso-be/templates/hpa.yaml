@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "sso-server.fullname" . }}
+  name: {{ include "sso-be.fullname" . }}
   labels:
-    {{- include "sso-server.labels" . | nindent 4 }}
+    {{- include "sso-be.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "sso-server.fullname" . }}
+    name: {{ include "sso-be.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:

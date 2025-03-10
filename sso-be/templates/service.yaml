@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "sso-server.fullname" . }}
+  name: {{ include "sso-be.fullname" . }}
   labels:
-    {{- include "sso-server.labels" . | nindent 4 }}
+    {{- include "sso-be.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,4 +12,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "sso-server.selectorLabels" . | nindent 4 }}
+    {{- include "sso-be.selectorLabels" . | nindent 4 }}
