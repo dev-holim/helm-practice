@@ -46,7 +46,10 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "sso-be.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "sso-be.name" . }}
+app: {{ .Chart.Name }}
+chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+release: {{ .Release.Name }}
+app.kubernetes.io/name: {{ .Chart.Name }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 

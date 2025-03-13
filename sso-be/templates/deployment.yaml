@@ -1,7 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "sso-be.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  name: {{ .Values.globalLabel }}-deployment
   labels:
     {{- include "sso-be.labels" . | nindent 4 }}
 spec:
@@ -13,6 +14,7 @@ spec:
       {{- include "sso-be.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      name: {{ .Chart.Name }}
       {{- with .Values.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
@@ -27,7 +29,8 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "sso-be.serviceAccountName" . }}
+      restartPolicy: {{ .Values.restartPolicy }}
+{{/*      serviceAccountName: {{ include "sso-be.serviceAccountName" . }}*/}}
       {{- with .Values.podSecurityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}
@@ -40,9 +43,14 @@ spec:
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            {{- range .Values.env }}
+            - name: {{ .name }}
+              value: {{ .value | quote }}
+            {{- end }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
           {{- with .Values.livenessProbe }}
           livenessProbe:
